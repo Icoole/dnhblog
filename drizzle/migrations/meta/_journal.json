@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789924110751,
+      "tag": "0000_create_blog_posts_and_roles",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789924148930,
+      "tag": "0001_blog_media_storage_policies",
+      "breakpoints": true
+    }
+  ]
+}
