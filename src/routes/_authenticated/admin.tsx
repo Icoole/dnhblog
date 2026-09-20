@@ -141,7 +141,10 @@ function AdminPage() {
 
   async function deletePost(id: string) {
     const { error } = await supabase.from("posts").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Post deleted");
     await refetch();
     await queryClient.invalidateQueries({ queryKey: ["posts"] });
