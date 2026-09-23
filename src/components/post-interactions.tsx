@@ -101,7 +101,7 @@ export function PostInteractions({ postId }: { postId: string }) {
   });
 
   return (
-    <section className="mt-16 border-t border-border pt-10" aria-labelledby="reader-conversation">
+    <section className="mt-16 border-t border-border pt-10" aria-label="Reader reactions and comments">
       <div>
         <p className="label-caps text-xs text-primary">How did this meet you?</p>
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -125,9 +125,9 @@ export function PostInteractions({ postId }: { postId: string }) {
         </div>
       </div>
 
-      <div className="mt-14" id="reader-conversation">
+      <div className="mt-14">
         <p className="label-caps text-xs text-primary">Join the conversation</p>
-        <h2 className="script-title mt-2 text-4xl">Leave a comment</h2>
+        <h2 id="reader-conversation" className="script-title mt-2 text-4xl">Leave a comment</h2>
         <form
           className="mt-6 space-y-4 border-y border-border bg-cream/45 px-4 py-6 sm:px-6"
           onSubmit={(event) => {
