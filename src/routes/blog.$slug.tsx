@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Clock, LinkIcon } from "lucide-react";
 
 import { getPost } from "@/lib/posts.functions";
 import { SiteShell } from "@/components/site-chrome";
+import { PostInteractions } from "@/components/post-interactions";
 
 const postQuery = (slug: string) =>
   queryOptions({
@@ -98,11 +99,13 @@ function PostPage() {
         </div>
 
         {data.cover_image_url ? (
-          <img
-            src={data.cover_image_url}
-            alt={data.title}
-            className="mt-10 w-full rounded-lg object-cover"
-          />
+          <div className="mt-10 flex max-h-[42rem] min-h-64 items-center justify-center overflow-hidden rounded-lg border border-border bg-cream/50 p-2">
+            <img
+              src={data.cover_image_url}
+              alt={data.title}
+              className="max-h-[40rem] w-full object-contain"
+            />
+          </div>
         ) : null}
 
         <div className="prose-wholesome mt-10 text-base leading-relaxed">
@@ -146,6 +149,8 @@ function PostPage() {
             </ul>
           </div>
         ) : null}
+
+        <PostInteractions postId={data.id} />
       </article>
     </SiteShell>
   );

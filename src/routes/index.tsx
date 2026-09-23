@@ -51,7 +51,7 @@ function CoverImage({ post, className }: { post: BlogPost; className?: string })
     <img
       src={post.cover_image_url}
       alt={post.title}
-      className={`object-cover ${className ?? ""}`}
+      className={`object-contain p-3 ${className ?? ""}`}
       loading="lazy"
     />
   );
@@ -64,7 +64,7 @@ function BlogIndex() {
 
   return (
     <SiteShell>
-      <section className="bg-cream py-20 text-center">
+      <section className="brand-wash py-20 text-center">
         <p className="label-caps text-xs text-primary">The Wholesome Blog</p>
         <h1 className="script-title mt-3 text-6xl md:text-7xl">Reflections &amp; Insights</h1>
         <p className="mx-auto mt-5 max-w-xl px-6 text-muted-foreground">
@@ -80,7 +80,7 @@ function BlogIndex() {
           </p>
         ) : (
           <article className="grid overflow-hidden rounded-lg border border-border bg-card shadow-sm md:grid-cols-2">
-            <div className="relative min-h-64">
+            <div className="relative min-h-64 bg-cream/50">
               <CoverImage post={featured} className="h-full w-full absolute inset-0" />
               <span className="label-caps absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-[0.6rem] text-primary-foreground">
                 Featured
@@ -115,7 +115,7 @@ function BlogIndex() {
               key={post.id}
               className="flex flex-col overflow-hidden rounded-lg border border-border bg-card"
             >
-              <div className="relative h-48">
+              <div className="relative h-48 bg-cream/50">
                 <CoverImage post={post} className="h-full w-full absolute inset-0" />
                 <span className="label-caps absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-[0.6rem] text-primary-foreground">
                   {post.category}

@@ -1,13 +1,17 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import logoMark from "@/assets/daffodils-logo-mark.png.asset.json";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-cream/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link to="/" className="leading-none">
-          <span className="script-title block text-3xl text-foreground">Daffodils</span>
-          <span className="label-caps block text-[0.6rem] text-muted-foreground">Nexus Hub</span>
+        <Link to="/" className="flex items-center gap-2 leading-none" aria-label="Daffodils Nexus Hub blog">
+          <img src={logoMark.url} alt="" className="h-12 w-14 object-contain" />
+          <span>
+            <span className="script-title block text-3xl text-foreground">Daffodils</span>
+            <span className="label-caps block text-[0.6rem] text-muted-foreground">Nexus Hub</span>
+          </span>
         </Link>
         <nav className="label-caps flex items-center gap-6 text-xs">
           <Link to="/" className="transition-colors hover:text-primary">
@@ -24,9 +28,12 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-border/60 bg-cream">
+    <footer className="brand-wash mt-24 border-t border-border/60">
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <p className="script-title text-2xl">Grow. Inspire. Empower.</p>
+        <div className="flex items-center gap-3">
+          <img src={logoMark.url} alt="Daffodils Nexus Hub" className="h-16 w-20 object-contain" />
+          <p className="script-title text-2xl">Grow. Inspire. Empower.</p>
+        </div>
         <p className="mt-3 max-w-md text-sm text-muted-foreground">
           Reflections on leadership, faith, wholeness, and purposeful living from Daffodils Nexus
           Hub.
