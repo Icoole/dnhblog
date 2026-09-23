@@ -1,14 +1,18 @@
-# Welcome to your Lovable project
+# Daffodil Blog Builder
+
+bring out only the blog page ffom daffodils rebuild https://daffodilsnexushub.lovable.app and let there be admin page to make a post, add images,video,links and it will refect on the blog
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Live app**: https://dnhblog.lovable.app
+
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/27a016d5-b688-4ef9-9dcb-19bc5d21fd19).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +24,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
