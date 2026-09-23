@@ -264,7 +264,7 @@ function AdminPage() {
                   />
                 </label>
                 {coverUrl ? (
-                  <img src={coverUrl} alt="Cover preview" className="h-12 w-16 rounded object-cover" />
+                  <img src={coverUrl} alt="Cover preview" className="h-14 w-20 rounded border border-border bg-cream/50 object-contain p-1" />
                 ) : null}
               </div>
               <input

@@ -39,6 +39,7 @@
   --color-cream: var(--cream);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
+  --color-leaf: var(--leaf);
   --font-display: var(--font-display);
   --font-label: var(--font-label);
   --font-body: var(--font-body);
@@ -69,6 +70,7 @@
   --cream: oklch(0.945 0.035 93);
   --gold: oklch(0.72 0.125 80);
   --gold-soft: oklch(0.87 0.07 88);
+  --leaf: oklch(0.48 0.13 134);
   --font-display: "Dancing Script", cursive;
   --font-label: "Oswald", sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
@@ -84,7 +86,14 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
+    background-image: linear-gradient(135deg, color-mix(in oklch, var(--gold-soft) 12%, transparent), transparent 42%, color-mix(in oklch, var(--leaf) 5%, transparent));
+    background-attachment: fixed;
   }
+}
+
+@utility brand-wash {
+  background-color: var(--cream);
+  background-image: linear-gradient(120deg, color-mix(in oklch, var(--gold-soft) 26%, transparent), transparent 48%, color-mix(in oklch, var(--leaf) 10%, transparent));
 }
 
 @utility label-caps {
