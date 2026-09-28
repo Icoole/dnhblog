@@ -6,7 +6,9 @@ export function SharePost({ title, slug }: { title: string; slug: string }) {
   const [url, setUrl] = useState(`https://dnhblog.lovable.app/blog/${slug}`);
   const [canNative, setCanNative] = useState(false);
   useEffect(() => {
-    setUrl(`${window.location.origin}/blog/${slug}`);
+    const origin = window.location.origin;
+    const isPreview = /lovable\.app$/.test(window.location.hostname) && origin.includes("preview");
+    setUrl(`${isPreview || origin.includes("localhost") ? "https://dnhblog.lovable.app" : origin}/blog/${slug}`);
     setCanNative(typeof navigator.share === "function");
   }, [slug]);
 
