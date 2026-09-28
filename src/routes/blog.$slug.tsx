@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Clock, LinkIcon } from "lucide-react";
 import { getPost } from "@/lib/posts.functions";
 import { SiteShell } from "@/components/site-chrome";
 import { PostInteractions } from "@/components/post-interactions";
+import { SharePost } from "@/components/share-post";
 
 const postQuery = (slug: string) =>
   queryOptions({
@@ -150,6 +151,7 @@ function PostPage() {
           </div>
         ) : null}
 
+        <SharePost title={data.title} slug={data.slug} />
         <PostInteractions postId={data.id} />
       </article>
     </SiteShell>
