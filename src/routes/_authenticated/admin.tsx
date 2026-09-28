@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Trash2, Upload, Plus, X } from "lucide-react";
+import { Trash2, Upload, Plus, X, Pencil } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/site-chrome";
@@ -78,6 +78,34 @@ function AdminPage() {
   const [links, setLinks] = useState<{ label: string; url: string }[]>([]);
   const [uploading, setUploading] = useState<"image" | "video" | null>(null);
   const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  function resetForm() {
+    setEditingId(null);
+    setTitle("");
+    setCategory("Reflections");
+    setExcerpt("");
+    setContent("");
+    setReadMinutes(4);
+    setCoverUrl("");
+    setVideoUrl("");
+    setLinks([]);
+    setFeatured(false);
+  }
+
+  function startEdit(p: NonNullable<typeof posts>[number]) {
+    setEditingId(p.id);
+    setTitle(p.title);
+    setCategory(p.category);
+    setExcerpt(p.excerpt);
+    setContent(p.content);
+    setReadMinutes(p.read_minutes);
+    setCoverUrl(p.cover_image_url ?? "");
+    setVideoUrl(p.video_url ?? "");
+    setLinks(Array.isArray(p.links) ? (p.links as { label: string; url: string }[]) : []);
+    setFeatured(p.featured);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   async function uploadFile(file: File, kind: "image" | "video") {
     setUploading(kind);
@@ -103,10 +131,8 @@ function AdminPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      const { error } = await supabase.from("posts").insert({
+      const fields = {
         title,
-        slug: `${slugify(title)}-${Math.random().toString(36).slice(2, 6)}`,
         category,
         excerpt,
         content,
@@ -115,21 +141,30 @@ function AdminPage() {
         cover_image_url: coverUrl || null,
         video_url: videoUrl || null,
         links: links.filter((l) => l.url),
-        author_id: userData.user?.id ?? null,
-      });
-      if (error) throw error;
-      if (featured) {
-        await supabase.from("posts").update({ featured: false }).neq("title", title);
-        await supabase.from("posts").update({ featured: true }).eq("title", title);
+      };
+      let id = editingId;
+      if (editingId) {
+        const { error } = await supabase.from("posts").update(fields).eq("id", editingId);
+        if (error) throw error;
+      } else {
+        const { data: userData } = await supabase.auth.getUser();
+        const { data, error } = await supabase
+          .from("posts")
+          .insert({
+            ...fields,
+            slug: `${slugify(title)}-${Math.random().toString(36).slice(2, 6)}`,
+            author_id: userData.user?.id ?? null,
+          })
+          .select("id")
+          .single();
+        if (error) throw error;
+        id = data.id;
       }
-      toast.success("Post published");
-      setTitle("");
-      setExcerpt("");
-      setContent("");
-      setCoverUrl("");
-      setVideoUrl("");
-      setLinks([]);
-      setFeatured(false);
+      if (featured && id) {
+        await supabase.from("posts").update({ featured: false }).neq("id", id);
+      }
+      toast.success(editingId ? "Post updated" : "Post published");
+      resetForm();
       await refetch();
       await queryClient.invalidateQueries({ queryKey: ["posts"] });
     } catch (err) {
@@ -180,7 +215,7 @@ function AdminPage() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="label-caps text-xs text-primary">Blog admin</p>
-            <h1 className="script-title mt-2 text-5xl">Write a post</h1>
+            <h1 className="script-title mt-2 text-5xl">{editingId ? "Edit post" : "Write a post"}</h1>
           </div>
           <button
             onClick={async () => {
@@ -356,8 +391,17 @@ function AdminPage() {
             disabled={saving}
             className="label-caps rounded-md bg-primary px-6 py-3 text-xs text-primary-foreground disabled:opacity-60"
           >
-            {saving ? "Publishing…" : "Publish post"}
+            {saving ? "Saving…" : editingId ? "Save changes" : "Publish post"}
           </button>
+          {editingId ? (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="label-caps ml-3 rounded-md border border-border px-6 py-3 text-xs"
+            >
+              Cancel editing
+            </button>
+          ) : null}
         </form>
 
         <div className="mt-16">
@@ -371,6 +415,14 @@ function AdminPage() {
                     {new Date(p.published_at).toLocaleDateString()} · {p.category}
                   </p>
                 </div>
+                <div className="flex gap-2">
+                <button
+                  onClick={() => startEdit(p)}
+                  className="rounded-md border border-border p-2 text-primary"
+                  aria-label={`Edit ${p.title}`}
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
                 <button
                   onClick={() => void deletePost(p.id)}
                   className="rounded-md border border-border p-2 text-destructive"
@@ -378,6 +430,7 @@ function AdminPage() {
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
+                </div>
               </li>
             ))}
           </ul>
