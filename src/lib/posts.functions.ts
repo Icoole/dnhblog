@@ -26,6 +26,7 @@ export const listPosts = createServerFn({ method: "GET" }).handler(async () => {
     .from("posts")
     .select("*")
     .eq("published", true)
+    .lte("published_at", new Date().toISOString())
     .order("published_at", { ascending: false });
   if (error) return [] as BlogPost[];
   return (data ?? []) as BlogPost[];
@@ -39,6 +40,7 @@ export const getPost = createServerFn({ method: "GET" })
       .select("*")
       .eq("slug", data.slug)
       .eq("published", true)
+    .lte("published_at", new Date().toISOString())
       .maybeSingle();
     return (post ?? null) as BlogPost | null;
   });

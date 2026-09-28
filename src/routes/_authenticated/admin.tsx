@@ -78,6 +78,7 @@ function AdminPage() {
   const [links, setLinks] = useState<{ label: string; url: string }[]>([]);
   const [uploading, setUploading] = useState<"image" | "video" | null>(null);
   const [saving, setSaving] = useState(false);
+  const [publishAt, setPublishAt] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
 
   function resetForm() {
@@ -91,6 +92,7 @@ function AdminPage() {
     setVideoUrl("");
     setLinks([]);
     setFeatured(false);
+    setPublishAt("");
   }
 
   function startEdit(p: NonNullable<typeof posts>[number]) {
@@ -104,6 +106,10 @@ function AdminPage() {
     setVideoUrl(p.video_url ?? "");
     setLinks(Array.isArray(p.links) ? (p.links as { label: string; url: string }[]) : []);
     setFeatured(p.featured);
+    {
+      const d = new Date(p.published_at);
+      setPublishAt(new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16));
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -141,6 +147,11 @@ function AdminPage() {
         cover_image_url: coverUrl || null,
         video_url: videoUrl || null,
         links: links.filter((l) => l.url),
+        ...(publishAt
+          ? { published_at: new Date(publishAt).toISOString() }
+          : editingId
+            ? {}
+            : { published_at: new Date().toISOString() }),
       };
       let id = editingId;
       if (editingId) {
@@ -163,7 +174,13 @@ function AdminPage() {
       if (featured && id) {
         await supabase.from("posts").update({ featured: false }).neq("id", id);
       }
-      toast.success(editingId ? "Post updated" : "Post published");
+      toast.success(
+        publishAt && new Date(publishAt) > new Date()
+          ? `Scheduled for ${new Date(publishAt).toLocaleString()}`
+          : editingId
+            ? "Post updated"
+            : "Post published",
+      );
       resetForm();
       await refetch();
       await queryClient.invalidateQueries({ queryKey: ["posts"] });
@@ -377,6 +394,16 @@ function AdminPage() {
             </div>
           </div>
 
+          <div>
+            <label className={labelClass}>Publish date &amp; time (leave empty to publish now)</label>
+            <input
+              type="datetime-local"
+              value={publishAt}
+              onChange={(e) => setPublishAt(e.target.value)}
+              className={inputClass}
+            />
+          </div>
+
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
@@ -391,7 +418,7 @@ function AdminPage() {
             disabled={saving}
             className="label-caps rounded-md bg-primary px-6 py-3 text-xs text-primary-foreground disabled:opacity-60"
           >
-            {saving ? "Saving…" : editingId ? "Save changes" : "Publish post"}
+            {saving ? "Saving…" : editingId ? "Save changes" : publishAt && new Date(publishAt) > new Date() ? "Schedule post" : "Publish post"}
           </button>
           {editingId ? (
             <button
@@ -412,7 +439,7 @@ function AdminPage() {
                 <div>
                   <p className="font-medium">{p.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(p.published_at).toLocaleDateString()} · {p.category}
+                    {new Date(p.published_at) > new Date() ? `Scheduled · ${new Date(p.published_at).toLocaleString()}` : new Date(p.published_at).toLocaleDateString()} · {p.category}
                   </p>
                 </div>
                 <div className="flex gap-2">
